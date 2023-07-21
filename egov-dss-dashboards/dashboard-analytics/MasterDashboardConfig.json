@@ -21,7 +21,7 @@
               "charts": [
                 {
                   "id": "totalLoans",
-                  "name": "Total Loans",
+                  "name": "Total Scheme Applications",
                   "code": "",
                   "chartType": "metric",
                   "filter": "",
