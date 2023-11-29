@@ -1,0 +1,71 @@
+serviceMaps:
+  serviceName: dfs-farmer-bank-details
+  mappings:
+  - version: 1.0
+    name: Farmer Bank Details
+    description: Persists save farmer bank details to table
+    fromTopic: save-farmer-bank-details
+    isTransaction: true
+    queryMaps:
+    - query: INSERT INTO dfs_bank_details (id, clientreferenceid, tenantid, farmerid, bankname, accountnumber, ifsccode, bankbranchaddress, isprimary, rowversion, isdeleted, createdby, lastmodifiedby, createdtime, lastmodifiedtime) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);
+      basePath: BankDetails
+      jsonMaps:
+
+      - jsonPath: $.BankDetails.id
+
+      - jsonPath: $.BankDetails.clientReferenceId
+
+      - jsonPath: $.BankDetails.tenantId
+
+      - jsonPath: $.BankDetails.farmerId
+
+      - jsonPath: $.BankDetails.bankName
+
+      - jsonPath: $.BankDetails.accountNumber
+
+      - jsonPath: $.BankDetails.ifscCode
+
+      - jsonPath: $.BankDetails.bankBranchAddress
+
+      - jsonPath: $.BankDetails.isPrimary
+
+      - jsonPath: $.BankDetails.rowVersion
+
+      - jsonPath: $.BankDetails.isDeleted
+
+      - jsonPath: $.BankDetails.auditDetails.createdBy
+
+      - jsonPath: $.BankDetails.auditDetails.lastModifiedBy
+
+      - jsonPath: $.BankDetails.auditDetails.createdTime
+
+      - jsonPath: $.BankDetails.auditDetails.lastModifiedTime
+
+
+  - version: 1.0
+    name: farmer-bank-details
+    description: Updates farmer bank details in the table
+    fromTopic: update-farmer-bank-details
+    isTransaction: true
+    queryMaps:
+    - query: UPDATE dfs_bank_details SET isprimary=?, isdeleted=?, createdby=?, createdtime=?, lastmodifiedby=?, lastmodifiedtime=? WHERE tenantid=? and id=?;
+      basePath: BankDetails
+      jsonMaps:
+
+      - jsonPath: $.BankDetails.isPrimary
+
+      - jsonPath: $.BankDetails.isDeleted
+
+      - jsonPath: $.BankDetails.auditDetails.createdBy
+
+      - jsonPath: $.BankDetails.auditDetails.createdTime
+
+      - jsonPath: $.BankDetails.auditDetails.lastModifiedBy
+
+      - jsonPath: $.BankDetails.auditDetails.lastModifiedTime
+
+      - jsonPath: $.BankDetails.tenantId
+
+      - jsonPath: $.BankDetails.id
+
+
