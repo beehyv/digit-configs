@@ -1,0 +1,129 @@
+serviceMaps:
+  serviceName: scheme-services
+  mappings:
+    - version: 1.0
+      description: Persists Scheme details in tables
+      fromTopic: save-scheme
+      isTransaction: true
+      queryMaps:
+
+        - query: INSERT INTO dfs_schemes (id,tenantid,parentschemeid,name,type,startdate,enddate,masterdataurl,sponsoredby,department,subdepartment,additionalfields,createdby,lastmodifiedby,createdtime, lastmodifiedtime,rowversion,isdeleted) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);
+          basePath: scheme
+          jsonMaps:
+            - jsonPath: $.scheme.id
+            - jsonPath: $.scheme.tenantId
+            - jsonPath: $.scheme.parentSchemeId
+            - jsonPath: $.scheme.name
+            - jsonPath: $.scheme.type
+            - jsonPath: $.scheme.startDate
+            - jsonPath: $.scheme.endDate
+            - jsonPath: $.scheme.masterDataUrl
+            - jsonPath: $.scheme.sponsoredBy
+            - jsonPath: $.scheme.department
+            - jsonPath: $.scheme.subDepartment
+            - jsonPath: $.scheme.additionalFields
+              type: JSON
+              dbType: JSONB
+            - jsonPath: $.scheme.auditDetails.createdBy
+            - jsonPath: $.scheme.auditDetails.lastModifiedBy
+            - jsonPath: $.scheme.auditDetails.createdTime
+            - jsonPath: $.scheme.auditDetails.lastModifiedTime
+            - jsonPath: $.scheme.rowVersion
+            - jsonPath: $.scheme.isDeleted
+
+
+        - query: INSERT INTO dfs_scheme_boundary(id, tenantid, schemeid, boundarycodepath, createdby, lastmodifiedby, createdtime, lastmodifiedtime, rowversion) VALUES (?,?,?,?,?,?,?,?,?);
+          basePath: scheme.schemeBoundary.*
+          jsonMaps:
+            - jsonPath: $.scheme.schemeBoundary.*.id
+            - jsonPath: $.scheme.schemeBoundary.*.tenantId
+            - jsonPath: $.scheme.schemeBoundary.*.schemeId
+            - jsonPath: $.scheme.schemeBoundary.*.boundaryCodePath
+            - jsonPath: $.scheme.schemeBoundary.*.auditDetails.createdBy
+            - jsonPath: $.scheme.schemeBoundary.*.auditDetails.lastModifiedBy
+            - jsonPath: $.scheme.schemeBoundary.*.auditDetails.createdTime
+            - jsonPath: $.scheme.schemeBoundary.*.auditDetails.lastModifiedTime
+            - jsonPath: $.scheme.schemeBoundary.*.rowVersion
+
+
+    - version: 1.0
+      description: Update scheme details in table
+      fromTopic: update-scheme
+      isTransaction: true
+      queryMaps:
+        - query: UPDATE dfs_schemes s SET parentschemeid = ?,name = ?,type = ?,startdate = ?,enddate = ?,masterdataurl = ?,sponsoredby = ?, department = ?,subdepartment = ?,lastmodifiedby = ?,lastmodifiedtime = ?,rowversion = ?,isdeleted = ? WHERE s.id=?;
+          basePath: scheme
+          jsonMaps:
+            - jsonPath: $.scheme.parentSchemeId
+            - jsonPath: $.scheme.name
+            - jsonPath: $.scheme.type
+            - jsonPath: $.scheme.startDate
+            - jsonPath: $.scheme.endDate
+            - jsonPath: $.scheme.masterDataUrl
+            - jsonPath: $.scheme.sponsoredBy
+            - jsonPath: $.scheme.department
+            - jsonPath: $.scheme.subDepartment
+            - jsonPath: $.scheme.auditDetails.lastModifiedBy
+            - jsonPath: $.scheme.auditDetails.lastModifiedTime
+            - jsonPath: $.scheme.rowVersion
+            - jsonPath: $.scheme.isDeleted
+            - jsonPath: $.scheme.id
+
+        - query: INSERT INTO dfs_scheme_boundary (id, tenantid, schemeid, boundarycodepath, createdby, lastmodifiedby, createdtime, lastmodifiedtime, rowversion) VALUES (?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET boundarycodepath = ?, lastmodifiedby = ?, lastmodifiedtime = ? ;
+          basePath: scheme.schemeBoundary.*
+          jsonMaps:
+            - jsonPath: $.scheme.schemeBoundary.*.id
+            - jsonPath: $.scheme.schemeBoundary.*.tenantId
+            - jsonPath: $.scheme.schemeBoundary.*.schemeId
+            - jsonPath: $.scheme.schemeBoundary.*.boundaryCodePath
+            - jsonPath: $.scheme.schemeBoundary.*.auditDetails.createdBy
+            - jsonPath: $.scheme.schemeBoundary.*.auditDetails.lastModifiedBy
+            - jsonPath: $.scheme.schemeBoundary.*.auditDetails.createdTime
+            - jsonPath: $.scheme.schemeBoundary.*.auditDetails.lastModifiedTime
+            - jsonPath: $.scheme.schemeBoundary.*.rowVersion
+            - jsonPath: $.scheme.schemeBoundary.*.boundaryCodePath
+            - jsonPath: $.scheme.schemeBoundary.*.auditDetails.lastModifiedBy
+            - jsonPath: $.scheme.schemeBoundary.*.auditDetails.lastModifiedTime
+
+
+    - version: 1.0
+      description: Deletes Scheme Boundary details in tables
+      fromTopic: delete-scheme-boundary
+      isTransaction: true
+      queryMaps:
+
+        - query: DELETE FROM dfs_scheme_boundary WHERE id = ?;
+          basePath: schemeBoundaries.*
+          jsonMaps:
+            - jsonPath: $.schemeBoundaries.*.id
+
+
+    - version: 1.0
+      description: Persists Scheme Application details in tables
+      fromTopic: save-scheme-application
+      isTransaction: true
+      queryMaps:
+
+        - query: INSERT INTO dfs_scheme_applications (id, clientreferenceid, tenantid, schemeid, farmerid, application, documents, status, additionalfields, createdby, lastmodifiedby, createdtime, lastmodifiedtime, rowversion) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?);
+          basePath: schemeApplication
+          jsonMaps:
+            - jsonPath: $.schemeApplication.id
+            - jsonPath: $.schemeApplication.clientReferenceId
+            - jsonPath: $.schemeApplication.tenantId
+            - jsonPath: $.schemeApplication.schemeId
+            - jsonPath: $.schemeApplication.farmerId
+            - jsonPath: $.schemeApplication.application
+              type: JSON
+              dbType: JSONB
+            - jsonPath: $.schemeApplication.documents
+              type: JSON
+              dbType: JSONB
+            - jsonPath: $.schemeApplication.status
+            - jsonPath: $.schemeApplication.additionalFields
+              type: JSON
+              dbType: JSONB
+            - jsonPath: $.schemeApplication.auditDetails.createdBy
+            - jsonPath: $.schemeApplication.auditDetails.lastModifiedBy
+            - jsonPath: $.schemeApplication.auditDetails.createdTime
+            - jsonPath: $.schemeApplication.auditDetails.lastModifiedTime
+            - jsonPath: $.schemeApplication.rowVersion
